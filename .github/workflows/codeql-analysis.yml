@@ -28,7 +28,7 @@ jobs:
 
       - name: Build Swift (iOS)
         run: |
-          xcodebuild -workspace DVIA-v2/DVIA-v2.xcworkspace -scheme DVIA-v2 -sdk iphonesimulator
+          xcodebuild -workspace DVIA-v2/DVIA-v2.xcworkspace -scheme DVIA-v2 -destination 'platform=iOS Simulator,name=iPhone 14,OS=latest'
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v3
