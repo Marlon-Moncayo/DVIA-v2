@@ -5,10 +5,15 @@ on:
     branches: [ "master" ]
   pull_request:
     branches: [ "master" ]
+  schedule:
+    - cron: '0 0 * * 0'
 
 jobs:
   analyze:
     runs-on: macos-latest
+    permissions:
+      contents: read
+      security-events: write
     strategy:
       matrix:
         language: [ 'swift' ]
@@ -27,3 +32,4 @@ jobs:
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v3
+
