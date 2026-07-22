@@ -38,11 +38,9 @@ jobs:
           languages: swift
           queries: security-extended,security-and-quality
 
-      # Build manual en lugar de autobuild — clave para que CodeQL indexe el código
       - name: Build project manually
         run: |
           set -e
-          # Lista lo que hay para confirmar nombres exactos de workspace/scheme
           ls -la
           xcodebuild -list -workspace DVIA-v2.xcworkspace || xcodebuild -list -project DVIA-v2.xcodeproj
 
