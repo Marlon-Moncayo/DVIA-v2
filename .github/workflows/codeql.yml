@@ -26,7 +26,11 @@ jobs:
         with:
           xcode-version: latest-stable
 
+      - name: Show DVIA-v2 folder contents
+        run: ls -la DVIA-v2
+
       - name: Install CocoaPods dependencies
+        working-directory: DVIA-v2
         run: |
           if [ -f "Podfile" ]; then
             pod install --repo-update
@@ -39,9 +43,9 @@ jobs:
           queries: security-extended,security-and-quality
 
       - name: Build project manually
+        working-directory: DVIA-v2
         run: |
           set -e
-          ls -la
           xcodebuild -list -workspace DVIA-v2.xcworkspace || xcodebuild -list -project DVIA-v2.xcodeproj
 
           xcodebuild clean build \
