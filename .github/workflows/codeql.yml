@@ -1,0 +1,57 @@
+name: "CodeQL Analysis"
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  pull_request:
+    branches: [ "main", "master" ]
+  schedule:
+    # Ejecuta un análisis completo cada lunes a las 03:00 UTC
+    - cron: '0 3 * * 1'
+
+jobs:
+  analyze:
+    name: Analyze (${{ matrix.language }})
+    runs-on: macos-latest   # necesario para compilar proyectos Swift/Objective-C
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+
+    strategy:
+      fail-fast: false
+      matrix:
+        language: [ 'swift' ]
+        # Si el proyecto tiene también partes en Objective-C puro,
+        # CodeQL las detecta igualmente bajo 'swift' en repos mixtos.
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: ${{ matrix.language }}
+          queries: security-extended,security-and-quality
+
+      - name: Set up Xcode
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: latest-stable
+
+      - name: Install CocoaPods dependencies
+        run: |
+          if [ -f "Podfile" ]; then
+            pod install
+          fi
+        working-directory: ${{ github.workspace }}
+
+      # CodeQL para Swift necesita compilar el proyecto para poder analizarlo
+      - name: Build project (autobuild)
+        uses: github/codeql-action/autobuild@v3
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3
+        with:
+          category: "/language:${{ matrix.language }}"
