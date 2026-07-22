@@ -26,9 +26,6 @@ jobs:
         with:
           xcode-version: latest-stable
 
-      - name: Show DVIA-v2 folder contents
-        run: ls -la DVIA-v2
-
       - name: Install CocoaPods dependencies
         working-directory: DVIA-v2
         run: |
@@ -46,15 +43,14 @@ jobs:
         working-directory: DVIA-v2
         run: |
           set -e
-          xcodebuild -list -workspace DVIA-v2.xcworkspace || xcodebuild -list -project DVIA-v2.xcodeproj
-
           xcodebuild clean build \
             -workspace DVIA-v2.xcworkspace \
             -scheme DVIA-v2 \
             -sdk iphonesimulator \
             -destination 'generic/platform=iOS Simulator' \
             CODE_SIGNING_ALLOWED=NO \
-            ONLY_ACTIVE_ARCH=NO
+            ONLY_ACTIVE_ARCH=NO \
+            EXCLUDED_ARCHS=arm64
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v3
